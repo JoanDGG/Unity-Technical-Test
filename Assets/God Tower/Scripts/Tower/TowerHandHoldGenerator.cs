@@ -14,17 +14,19 @@ public class TowerHandholdGenerator : MonoBehaviour
     [SerializeField] private int holdsPerRing = 8;
 
     [Header("Handhold")]
-    [SerializeField]
-    private Vector3 handholdScale =
-        new Vector3(0.45f, 0.18f, 0.12f);
+    [SerializeField] private Vector3 handholdScale = new Vector3(0.45f, 0.18f, 0.12f);
+
+    [Header("Handhold Grab")]
+    [SerializeField] private Vector3 grabRotationOffset;
 
     [SerializeField] private float surfaceOffset = 0.05f;
 
     [Header("Layout")]
     [SerializeField] private bool staggerRings = true;
 
+    public float StartHeight => startHeight;
+    public float EndHeight => endHeight;
     private readonly List<Handhold> handholds = new();
-
     public IReadOnlyList<Handhold> Handholds => handholds;
 
     private void Awake()
@@ -104,7 +106,8 @@ public class TowerHandholdGenerator : MonoBehaviour
         handhold.Initialize(
             height,
             angle,
-            outward
+            outward,
+            grabRotationOffset
         );
 
         handholds.Add(handhold);
@@ -199,17 +202,19 @@ public class TowerHandholdGenerator : MonoBehaviour
             // Horizontal input biases the selected handhold.
             if (Mathf.Abs(horizontalInput) > 0.1f)
             {
-                bool movingRight = horizontalInput > 0f;
-                bool holdIsRight = angleDelta > 0f;
+                bool wantsRight =
+                    horizontalInput > 0f;
 
-                if (movingRight != holdIsRight)
+                bool holdIsRight =
+                    angleDelta > 0f;
+
+                if (wantsRight != holdIsRight)
                 {
-                    score += 4f;
+                    score += 10f;
                 }
                 else
                 {
-                    // Stronger input means stronger preference.
-                    score -= Mathf.Abs(horizontalInput) * 1.5f;
+                    score -= 3f;
                 }
             }
 
@@ -217,13 +222,6 @@ public class TowerHandholdGenerator : MonoBehaviour
             {
                 bestScore = score;
                 best = handhold;
-
-                Debug.Log(
-                    $"New best hold: {handhold.name} | " +
-                    $"Height: {handhold.Height:F2} | " +
-                    $"Angle: {handhold.Angle:F1} | " +
-                    $"Score: {score:F2}"
-                );
             }
         }
 

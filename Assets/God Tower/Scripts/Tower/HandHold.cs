@@ -12,16 +12,21 @@ public class Handhold : MonoBehaviour
         transform.position + OutwardDirection * grabOffset;
 
     public Quaternion GrabRotation =>
-        Quaternion.LookRotation(-OutwardDirection, Vector3.up);
+    Quaternion.LookRotation(
+        -OutwardDirection,
+        Vector3.up
+    );
 
     public void Initialize(
         float height,
         float angle,
-        Vector3 outwardDirection)
+        Vector3 outwardDirection,
+        Vector3 rotationOffset)
     {
         Height = height;
         Angle = angle;
-        OutwardDirection = outwardDirection.normalized;
+        OutwardDirection =
+            outwardDirection.normalized;
     }
 
 #if UNITY_EDITOR
