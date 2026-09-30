@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e27d5f1b2db182d4fbd3bd83971ac07f, type: 3}
   m_Name: Level 1
   m_EditorClassIdentifier: Assembly-CSharp::LevelConfig
+  levelIndex: 1
   levelName: Level 1
-  description: 
   bodyModuleCount: 0
   handholdVerticalSpacing: 0.7
   handholdsPerRing: 8
   climbDuration: 0.5
   summitSurvivalDuration: 3
-  skyboxMaterial: {fileID: 2100000, guid: 239233408e904d6481fe7291a103db87, type: 2}
+  skyboxMaterial: {fileID: 2100000, guid: 5edc53ecc9ad4a8fba93845cdce331e8, type: 2}

@@ -20,8 +20,6 @@ public class WebhookPresentationController : MonoBehaviour
     [SerializeField] private RocketWebhookPresentation rocketPresentation;
     [SerializeField] private HandWebhookPresentation handPresentation;
 
-    private WebhookEventConfig config;
-
     private void Awake()
     {
         if (flashImage != null)
@@ -33,8 +31,6 @@ public class WebhookPresentationController : MonoBehaviour
     {
         if (config == null)
             return;
-
-        this.config = config;
 
         PlaySound(config);
 
@@ -60,25 +56,37 @@ public class WebhookPresentationController : MonoBehaviour
         }
     }
 
-    public void PlayImpactFeedback()
+    public void PlayImpactFeedback(
+    WebhookEventConfig config)
     {
-        PlayFlash();
-        PlayCameraShake();
+        if (config == null)
+            return;
+
+        PlayFlash(config);
+        PlayCameraShake(config);
     }
 
-    private void PlayFlash()
+    private void PlayFlash(
+    WebhookEventConfig config)
     {
         if (flashImage != null)
-            StartCoroutine(FlashRoutine());
+        {
+            StartCoroutine(
+                FlashRoutine(
+                    config.FlashDuration
+                )
+            );
+        }
     }
 
-    private IEnumerator FlashRoutine()
+    private IEnumerator FlashRoutine(
+        float duration)
     {
         SetFlashAlpha(0.75f);
 
         float timer = 0f;
 
-        while (timer < config.FlashDuration)
+        while (timer < duration)
         {
             timer += Time.deltaTime;
 
@@ -86,7 +94,7 @@ public class WebhookPresentationController : MonoBehaviour
                 Mathf.Lerp(
                     0.75f,
                     0f,
-                    timer / config.FlashDuration
+                    timer / duration
                 );
 
             SetFlashAlpha(alpha);
@@ -104,12 +112,15 @@ public class WebhookPresentationController : MonoBehaviour
         flashImage.color = color;
     }
 
-    private void PlayCameraShake()
+    private void PlayCameraShake(
+        WebhookEventConfig config)
     {
         if (cameraShake == null)
             return;
 
-        cameraShake.GenerateImpulse(config.ShakeStrength);
+        cameraShake.GenerateImpulse(
+            config.ShakeStrength
+        );
     }
 
     private void PlaySound(

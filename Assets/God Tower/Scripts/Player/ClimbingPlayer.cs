@@ -52,10 +52,6 @@ public class ClimbingPlayer : MonoBehaviour
     [SerializeField] private float summitSurvivalDuration = 5f;
     [SerializeField] private float summitHeightTolerance = 0.05f;
 
-    [Space(10f)]
-    [Header("References")]
-    [SerializeField] private WebhookPresentationController bumpJuice;
-
     public event Action OnWin;
 
     private float summitSurvivalTimer;
@@ -150,12 +146,6 @@ public class ClimbingPlayer : MonoBehaviour
     private void Update()
     {
         UpdateGrabPause();
-
-        if (Keyboard.current != null &&
-            Keyboard.current.bKey.wasPressedThisFrame)
-        {
-            ReceiveBump();
-        }
 
         switch (CurrentState)
         {
@@ -410,6 +400,9 @@ public class ClimbingPlayer : MonoBehaviour
 
         if (recoveryHandhold == null)
         {
+            climbingRig.weight = 1f;
+            ResetBodyAnimation();
+
             CurrentState =
                 ClimbingState.Climbing;
 
@@ -460,7 +453,7 @@ public class ClimbingPlayer : MonoBehaviour
 
         climbingRig.weight = 1f;
 
-        Debug.Log("RECOVERED!");
+        CheckForSummit();
     }
 
     public bool ReceiveWebhookForce(
@@ -978,7 +971,6 @@ public class ClimbingPlayer : MonoBehaviour
             -fallDistance,
             fallDuration
         );
-        Debug.Log("BUMP! Player hit.");
     }
 
     private void Win()
@@ -996,8 +988,6 @@ public class ClimbingPlayer : MonoBehaviour
             summitSurvivalDuration;
 
         input.ConsumeHorizontalIntent();
-
-        Debug.Log("YOU WIN!");
     }
 
     #endregion
@@ -1092,38 +1082,6 @@ public class ClimbingPlayer : MonoBehaviour
         return grabPauseTimer > 0f;
     }
     #endregion
-
-    private void OnGUI()
-    {
-        if (CurrentState !=
-            ClimbingState.Summit)
-        {
-            return;
-        }
-
-        GUIStyle style =
-            new GUIStyle(GUI.skin.label);
-
-        style.fontSize = 32;
-        style.alignment =
-            TextAnchor.MiddleCenter;
-
-        string text =
-            $"HOLD! " +
-            $"{summitSurvivalTimer:F1} / " +
-            $"{summitSurvivalDuration:F1}";
-
-        GUI.Label(
-            new Rect(
-                Screen.width * 0.5f - 200f,
-                100f,
-                400f,
-                60f
-            ),
-            text,
-            style
-        );
-    }
 }
 
 #region HELPER CLASSES

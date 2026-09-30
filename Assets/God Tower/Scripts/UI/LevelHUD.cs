@@ -54,7 +54,6 @@ public class LevelHUD : MonoBehaviour
             progressSlider.value = 0f;
         }
 
-        Debug.Log($"LevelHUD: Initializing progress for level '{levelConfig.LevelName}' with {levelConfig.BodyModuleCount} body modules and {towerBuilder.TowerHeight} tower height.");
         totalScore =
             Mathf.RoundToInt(
                 // Calculate tower height with a buffer of 2 units for the base and the summit
@@ -127,9 +126,9 @@ public class LevelHUD : MonoBehaviour
         if (summitCountdownText != null)
         {
             summitCountdownText.text =
-                climbingPlayer
-                    .SummitTimeRemaining
-                    .ToString("0.0");
+                ((int)climbingPlayer
+                    .SummitTimeRemaining)
+                    .ToString();
         }
 
         if (summitProgressSlider != null)

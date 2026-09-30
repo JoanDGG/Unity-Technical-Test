@@ -13,10 +13,6 @@ public class LevelSelectButton : MonoBehaviour
     [SerializeField] private TMP_Text levelText;
     [SerializeField] private GameObject lockIcon;
 
-    [Header("References")]
-    [SerializeField] private Sprite lockedSprite;
-    [SerializeField] private Sprite unlockedSprite;
-
     private void Start()
     {
         Refresh();

@@ -14,10 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WebhookEventConfig
   eventName: Car
   route: /car
-  heightDelta: -4
+  heightDelta: -8
   movementDuration: 0.8
   presentationType: 1
-  presentationPrefab: {fileID: 3791658428943603971, guid: 178596b7c8b9ba24ea7a88a65723e010, type: 3}
   soundEffect: {fileID: 8300000, guid: 82c6d0b17d5bcb94bbbeec59fc6423b1, type: 3}
   flashDuration: 0.3
   shakeStrength: -0.7

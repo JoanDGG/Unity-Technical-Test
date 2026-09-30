@@ -41,7 +41,7 @@ public class WebhookEventManager : MonoBehaviour
         if (accepted)
         {
             presentationController
-                .PlayImpactFeedback();
+                .PlayImpactFeedback(config);
         }
     }
 }

@@ -16,7 +16,6 @@ public class WebhookEventConfig : ScriptableObject
 
     [Header("Presentation")]
     [SerializeField] private WebhookPresentationType presentationType;
-    [SerializeField] private GameObject presentationPrefab;
     [SerializeField] private AudioClip soundEffect;
     [SerializeField] private float flashDuration = 0.15f;
     [SerializeField] private float shakeStrength = -0.5f;
@@ -36,9 +35,6 @@ public class WebhookEventConfig : ScriptableObject
 
     public WebhookPresentationType PresentationType =>
         presentationType;
-
-    public GameObject PresentationPrefab =>
-        presentationPrefab;
 
     public AudioClip SoundEffect =>
         soundEffect;

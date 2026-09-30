@@ -3,7 +3,7 @@ using UnityEngine;
 
 public static class LevelProgressionManager
 {
-    private static int maxLevels = 5;
+    private static int MaxLevels = 5;
 
     private const string HighestUnlockedLevelKey =
         "HighestUnlockedLevel";
@@ -23,7 +23,7 @@ public static class LevelProgressionManager
     {
         int nextLevel = Mathf.Min(
             levelIndex + 1,
-            maxLevels
+            MaxLevels
         );
 
         if (nextLevel > HighestUnlockedLevel)

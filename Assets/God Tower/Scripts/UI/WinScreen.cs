@@ -1,8 +1,6 @@
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class WinScreen : MonoBehaviour
 {
@@ -11,7 +9,6 @@ public class WinScreen : MonoBehaviour
 
     [Header("UI")]
     [SerializeField] private GameObject winPanel;
-    [SerializeField] private TMP_Text levelCompleteText;
     [SerializeField] private GameObject continueButton;
 
     private LevelConfig currentLevel;

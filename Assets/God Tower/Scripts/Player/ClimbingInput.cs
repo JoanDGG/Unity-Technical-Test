@@ -176,12 +176,6 @@ public class ClimbingInput : MonoBehaviour
         Horizontal =
             horizontalIntent;
 
-        Debug.Log(
-            horizontalIntent < 0f
-                ? "SWIPE LEFT"
-                : "SWIPE RIGHT"
-        );
-
         return true;
     }
 

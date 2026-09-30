@@ -1,7 +1,5 @@
 using System.Collections;
-using Unity.Cinemachine;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class GlovesWebhookPresentation : MonoBehaviour
 {

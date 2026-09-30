@@ -14,10 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WebhookEventConfig
   eventName: Rockets
   route: /rockets
-  heightDelta: 3
+  heightDelta: 8
   movementDuration: 0.75
   presentationType: 2
-  presentationPrefab: {fileID: 5708189505952680597, guid: f67781f71358c3b44a6cc658e3996b30, type: 3}
   soundEffect: {fileID: 8300000, guid: 9e7bbd4bb7fbd2c4f835247c0c8f965e, type: 3}
   flashDuration: 0.3
   shakeStrength: -0.8
