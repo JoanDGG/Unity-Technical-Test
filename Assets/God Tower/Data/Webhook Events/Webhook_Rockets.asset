@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5d0e019e521c14d800df14b7eb4a97, type: 3}
+  m_Name: Webhook_Rockets
+  m_EditorClassIdentifier: Assembly-CSharp::WebhookEventConfig
+  eventName: Rockets
+  route: /rockets
+  heightDelta: 3
+  movementDuration: 0.75
+  presentationType: 2
+  presentationPrefab: {fileID: 5708189505952680597, guid: f67781f71358c3b44a6cc658e3996b30, type: 3}
+  soundEffect: {fileID: 8300000, guid: 9e7bbd4bb7fbd2c4f835247c0c8f965e, type: 3}
+  flashDuration: 0.3
+  shakeStrength: -0.8
+  forceDelay: 0.2

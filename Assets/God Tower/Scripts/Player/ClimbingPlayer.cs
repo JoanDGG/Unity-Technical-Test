@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 using UnityEngine.InputSystem;
@@ -50,12 +52,19 @@ public class ClimbingPlayer : MonoBehaviour
     [SerializeField] private float summitSurvivalDuration = 5f;
     [SerializeField] private float summitHeightTolerance = 0.05f;
 
-    private float summitSurvivalTimer;
+    [Space(10f)]
+    [Header("References")]
+    [SerializeField] private WebhookPresentationController bumpJuice;
 
-    public float SummitProgress => Mathf.Clamp01(summitSurvivalTimer / summitSurvivalDuration);
+    public event Action OnWin;
+
+    private float summitSurvivalTimer;
 
     private Vector3 bodyVisualBaseLocalPosition;
     private Quaternion bodyVisualBaseLocalRotation;
+
+    private float activeForceDistance;
+    private float activeForceDuration;
 
     private Handhold currentHandhold;
     private Handhold targetHandhold;
@@ -67,17 +76,8 @@ public class ClimbingPlayer : MonoBehaviour
     private float fallStartHeight;
     private float fallTargetHeight;
 
-    private float hitVisualOffset;
-
     private Vector3 handReachStartPosition;
     private Quaternion handReachStartRotation;
-
-    public ClimbingState CurrentState { get; private set; } = ClimbingState.Climbing;
-
-    private Transform ActiveHandTarget =>
-        activeHand == ClimbingHand.Left
-            ? leftHandTarget
-            : rightHandTarget;
 
     private ClimbingInput input;
     private ClimbingHand activeHand = ClimbingHand.Left;
@@ -94,11 +94,27 @@ public class ClimbingPlayer : MonoBehaviour
     private float height;
     private float angle;
 
-    private float stepTimer;
-
     private float movementProgress;
     private float startHeight;
     private float startAngle;
+
+    private Transform ActiveHandTarget =>
+        activeHand == ClimbingHand.Left
+            ? leftHandTarget
+            : rightHandTarget;
+
+    public float Height => height;
+
+    public ClimbingState CurrentState { get; private set; } = ClimbingState.Climbing;
+
+    public float SummitProgress => Mathf.Clamp01(summitSurvivalTimer / summitSurvivalDuration);
+
+    public float SummitTimeRemaining =>
+        Mathf.Max(
+            0f,
+            summitSurvivalDuration -
+            summitSurvivalTimer
+        );
 
     #region UNITY FUNCITONS
 
@@ -111,7 +127,10 @@ public class ClimbingPlayer : MonoBehaviour
         height = transform.position.y - towerCenter.position.y;
         angle = Mathf.Atan2(offset.x, offset.z) * Mathf.Rad2Deg;
         targetHeight = height;
+    }
 
+    private void Start()
+    {
         currentHandhold =
             handholdGenerator.FindStartingHandhold(
                 height,
@@ -123,10 +142,7 @@ public class ClimbingPlayer : MonoBehaviour
             height = currentHandhold.Height;
             angle = currentHandhold.Angle;
         }
-    }
 
-    private void Start()
-    {
         InitializeBodyVisual();
         InitializeHandTargets();
     }
@@ -176,6 +192,16 @@ public class ClimbingPlayer : MonoBehaviour
     #endregion
 
     #region INITIALIZE FUNCTIONS
+
+    public void Configure(
+        float newClimbDuration,
+        float newSummitSurvivalDuration
+    )
+    {
+        climbStepDuration = newClimbDuration;
+        summitSurvivalDuration =
+            newSummitSurvivalDuration;
+    }
 
     private void InitializeHandTargets()
     {
@@ -266,7 +292,7 @@ public class ClimbingPlayer : MonoBehaviour
 
         float t =
             Mathf.Clamp01(
-                stateTimer / fallDuration
+                stateTimer / activeForceDuration
             );
 
         float easedT =
@@ -350,9 +376,10 @@ public class ClimbingPlayer : MonoBehaviour
         fallStartHeight = height;
 
         fallTargetHeight =
-            Mathf.Max(
-                GetMinimumClimbHeight(),
-                height - fallDistance
+            Mathf.Clamp(
+                height + activeForceDistance,
+                handholdGenerator.StartHeight,
+                handholdGenerator.EndHeight
             );
 
         // During the fall, neither hand owns a hold.
@@ -434,6 +461,32 @@ public class ClimbingPlayer : MonoBehaviour
         climbingRig.weight = 1f;
 
         Debug.Log("RECOVERED!");
+    }
+
+    public bool ReceiveWebhookForce(
+    float heightDelta,
+    float duration)
+    {
+        if (CurrentState == ClimbingState.Won ||
+            CurrentState == ClimbingState.Hit ||
+            CurrentState == ClimbingState.Falling ||
+            CurrentState == ClimbingState.Recovering)
+        {
+            return false;
+        }
+
+        activeForceDistance = heightDelta;
+        activeForceDuration = duration;
+
+        summitSurvivalTimer = 0f;
+
+        isMovingToHandhold = false;
+        targetHandhold = null;
+
+        CurrentState = ClimbingState.Hit;
+        stateTimer = 0f;
+
+        return true;
     }
 
     private void UpdateHitVisual(float t)
@@ -921,27 +974,10 @@ public class ClimbingPlayer : MonoBehaviour
 
     public void ReceiveBump()
     {
-        if (CurrentState == ClimbingState.Won)
-            return;
-
-        if (CurrentState == ClimbingState.Hit ||
-            CurrentState == ClimbingState.Falling ||
-            CurrentState == ClimbingState.Recovering)
-        {
-            return;
-        }
-
-        summitSurvivalTimer = 0f;
-
-        // Cancel any climb currently in progress.
-        isMovingToHandhold = false;
-        targetHandhold = null;
-
-        input.ConsumeHorizontalIntent();
-
-        CurrentState = ClimbingState.Hit;
-        stateTimer = 0f;
-
+        ReceiveWebhookForce(
+            -fallDistance,
+            fallDuration
+        );
         Debug.Log("BUMP! Player hit.");
     }
 
@@ -953,8 +989,8 @@ public class ClimbingPlayer : MonoBehaviour
             return;
         }
 
-        CurrentState =
-            ClimbingState.Won;
+        CurrentState = ClimbingState.Won;
+        OnWin?.Invoke();
 
         summitSurvivalTimer =
             summitSurvivalDuration;

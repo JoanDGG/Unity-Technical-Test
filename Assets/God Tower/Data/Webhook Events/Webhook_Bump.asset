@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5d0e019e521c14d800df14b7eb4a97, type: 3}
+  m_Name: Webhook_Bump
+  m_EditorClassIdentifier: Assembly-CSharp::WebhookEventConfig
+  eventName: Boxing Gloves
+  route: /bump
+  heightDelta: -2.25
+  movementDuration: 0.65
+  presentationType: 0
+  presentationPrefab: {fileID: 9113526699734558839, guid: e841bf23d95dde74e8063999ebecc323, type: 3}
+  soundEffect: {fileID: 8300000, guid: 076860ee0c4eaa24b96fb313b60342eb, type: 3}
+  forceDelay: 0.1

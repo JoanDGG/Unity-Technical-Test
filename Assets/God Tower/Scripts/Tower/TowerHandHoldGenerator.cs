@@ -8,13 +8,11 @@ public class TowerHandholdGenerator : MonoBehaviour
     [SerializeField] private float towerRadius = 2.15f;
 
     [Header("Generation")]
+    [SerializeField] private GameObject handholdPrefab;
     [SerializeField] private float startHeight = 0.75f;
     [SerializeField] private float endHeight = 20f;
     [SerializeField] private float verticalSpacing = 0.75f;
     [SerializeField] private int holdsPerRing = 8;
-
-    [Header("Handhold")]
-    [SerializeField] private Vector3 handholdScale = new Vector3(0.45f, 0.18f, 0.12f);
 
     [Header("Handhold Grab")]
     [SerializeField] private Vector3 grabRotationOffset;
@@ -29,8 +27,16 @@ public class TowerHandholdGenerator : MonoBehaviour
     private readonly List<Handhold> handholds = new();
     public IReadOnlyList<Handhold> Handholds => handholds;
 
-    private void Awake()
+    public void Configure(
+        int bodyModuleCount,
+        float verticalSpacing,
+        int holdsPerRing
+    )
     {
+        endHeight += endHeight * (bodyModuleCount + 1);
+        this.verticalSpacing = verticalSpacing;
+        this.holdsPerRing = holdsPerRing;
+
         Generate();
     }
 
@@ -84,21 +90,15 @@ public class TowerHandholdGenerator : MonoBehaviour
 
         position.y = towerCenter.position.y + height;
 
-        GameObject handholdObject = GameObject.CreatePrimitive(
-            PrimitiveType.Cube
+        GameObject handholdObject = Instantiate(
+            handholdPrefab,
+            position,
+            Quaternion.LookRotation(outward, Vector3.up),
+            transform
         );
 
         handholdObject.name =
             $"Handhold_H{height:00.00}_A{angle:000.00}";
-
-        handholdObject.transform.SetParent(transform);
-
-        handholdObject.transform.position = position;
-        handholdObject.transform.localScale = handholdScale;
-
-        // The cube's forward axis points away from the tower.
-        handholdObject.transform.rotation =
-            Quaternion.LookRotation(outward, Vector3.up);
 
         Handhold handhold =
             handholdObject.AddComponent<Handhold>();
